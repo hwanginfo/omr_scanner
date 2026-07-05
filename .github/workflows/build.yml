@@ -5,25 +5,18 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-env:
-  PUB_HOSTED_URL: https://pub.tuna.tsinghua.edu.cn/dart-pub
-  FLUTTER_STORAGE_BASE_URL: https://mirrors.tuna.tsinghua.edu.cn/flutter
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cirruslabs/flutter:stable
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Flutter
-        run: |
-          git clone --depth 1 -b stable https://github.com/flutter/flutter.git $HOME/flutter
-          echo "$HOME/flutter/bin" >> $GITHUB_PATH
-
       - run: flutter --version
 
-      - run: flutter config --android-sdk /dev/null 2>/dev/null; flutter pub get
+      - run: flutter pub get
 
       - name: Build debug APK
         run: flutter build apk --debug
