@@ -16,14 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
+      - name: Install Flutter
+        run: |
+          git clone --depth 1 -b stable https://github.com/flutter/flutter.git $HOME/flutter
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
       - run: flutter --version
 
-      - run: flutter pub get
+      - run: flutter config --android-sdk /dev/null 2>/dev/null; flutter pub get
 
       - name: Build debug APK
         run: flutter build apk --debug
