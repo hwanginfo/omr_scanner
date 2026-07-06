@@ -1,14 +1,3 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        // Flutter Gradle plugin (flutter.groovy) imports groovy.xml.QName
-        // which is not bundled with newer Gradle/Groovy distributions
-        classpath("org.codehaus.groovy:groovy-xml:3.0.21")
-    }
-}
-
 val newBuildDir: Directory =
     rootProject.layout.buildDirectory
         .dir("../../build")
