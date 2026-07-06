@@ -29,6 +29,10 @@ jobs:
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-35" "build-tools;35.0.0" --yes 2>&1 || true
 
+      # Delete old pubspec.lock (from Flutter 3.44 with Dart 3.5+) 
+      # to let Dart 3.4.x resolve compatible dependency versions
+      - run: rm -f pubspec.lock
+
       - run: flutter pub get
 
       - name: Build debug APK
