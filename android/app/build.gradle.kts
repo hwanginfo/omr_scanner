@@ -1,5 +1,4 @@
 import java.util.Properties
-import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
@@ -7,11 +6,10 @@ plugins {
 }
 
 // Load keystore properties for release signing
-val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-}
+val keystoreProperties = if (keystorePropertiesFile.exists()) {
+    Properties().apply { keystorePropertiesFile.inputStream().use { load(it) } }
+} else null
 
 android {
     namespace = "com.omrscanner.app"
@@ -31,14 +29,12 @@ android {
         versionName = flutter.versionName
     }
 
-    // Release signing: only configured when key.properties exists (local dev),
-    // skipped in CI where the file is not available.
-    if (keystorePropertiesFile.exists()) {
+    if (keystoreProperties != null) {
         signingConfigs {
             create("release") {
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+                storeFile = file(keystoreProperties["storeFile"] as String)
                 storePassword = keystoreProperties["storePassword"] as String
             }
         }
@@ -46,7 +42,7 @@ android {
 
     buildTypes {
         release {
-            if (keystorePropertiesFile.exists()) {
+            if (keystoreProperties != null) {
                 signingConfig = signingConfigs["release"]
             }
         }
