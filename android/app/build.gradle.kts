@@ -51,6 +51,11 @@ android {
             }
         }
     }
+
+    // Kotlin JVM target must match Java compileOptions
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 flutter {
