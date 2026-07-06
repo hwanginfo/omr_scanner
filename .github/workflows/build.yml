@@ -15,37 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Switch Flutter to 3.22.2 inside the container
-      - name: Switch to Flutter 3.22.2
-        run: |
-          cd $FLUTTER_ROOT
-          git fetch --depth=1 origin tag 3.22.2 2>/dev/null || true
-          git checkout 3.22.2
-          flutter --version
-
       - run: flutter --version
 
       - name: Setup Android SDK Platform
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-35" "build-tools;35.0.0" --yes 2>&1 || true
 
-      # Delete old pubspec.lock (from Flutter 3.44 with Dart 3.5+) 
-      # to let Dart 3.4.x resolve compatible dependency versions
-      - run: rm -f pubspec.lock
-
       - run: flutter pub get
 
       - name: Build debug APK
-        run: |
-          flutter build apk --debug --verbose > /tmp/build-output.log 2>&1 || true
-          tail -300 /tmp/build-output.log
-
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-debug-log
-          path: /tmp/build-output.log
+        run: flutter build apk --debug
 
       - name: Upload APK Artifact
         if: success()
