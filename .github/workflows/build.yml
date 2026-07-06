@@ -15,11 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+      # Switch Flutter to 3.22.2 inside the container
+      - name: Switch to Flutter 3.22.2
+        run: |
+          cd $FLUTTER_ROOT
+          git fetch --depth=1 origin tag 3.22.2 2>/dev/null || true
+          git checkout 3.22.2
+          flutter --version
 
       - run: flutter --version
 
@@ -30,7 +32,7 @@ jobs:
       - run: flutter pub get
 
       - name: Build debug APK
-        run: flutter build apk --debug --android-skip-build-dependency-validation
+        run: flutter build apk --debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
