@@ -38,7 +38,7 @@ jobs:
       - run: flutter pub get
 
       - name: Accept Android licenses
-        run: flutter doctor --android-licenses 2>/dev/null || true
+        run: yes | flutter doctor --android-licenses 2>/dev/null || true
 
       - name: Build debug APK
         run: flutter build apk --debug --android-skip-build-dependency-validation
