@@ -26,15 +26,12 @@ jobs:
       - run: flutter pub get
 
       - name: Build debug APK
-        run: flutter build apk --debug --verbose 2>&1
+        run: flutter build apk --debug
 
-      - name: Locate APK
-        run: find build -name "*.apk" -type f 2>/dev/null || echo "No APK found in build/"
+      - name: List APK output
+        run: find . -name "*.apk" -type f
 
       - uses: actions/upload-artifact@v4
         with:
           name: omr-scanner-debug-apk
-          path: |
-            build/app/outputs/flutter-apk/app-debug.apk
-            build/app/outputs/flutter-apk/app-release.apk
-            build/**/*.apk
+          path: "**/app-debug.apk"
