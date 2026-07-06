@@ -4,7 +4,6 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     id("dev.flutter.flutter-gradle-plugin")
-    kotlin("android") version "2.0.21"
 }
 
 // Load keystore properties for release signing
@@ -51,11 +50,6 @@ android {
                 signingConfig = signingConfigs["release"]
             }
         }
-    }
-
-    // Kotlin JVM target must match Java compileOptions
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
