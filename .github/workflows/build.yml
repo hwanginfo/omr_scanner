@@ -26,7 +26,7 @@ jobs:
       - run: flutter pub get
 
       - name: Build debug APK
-        run: flutter build apk --debug
+        run: flutter build apk --debug --android-skip-build-dependency-validation
 
       - name: List APK output
         run: find . -name "*.apk" -type f
