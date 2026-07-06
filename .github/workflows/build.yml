@@ -8,30 +8,45 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/cirruslabs/flutter:stable
+    timeout-minutes: 40
 
     steps:
+      # 释放磁盘空间减少内存压力
+      - name: Clean up disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /opt/hostedtoolcache 2>/dev/null || true
+          sudo apt clean 2>/dev/null || true
+
       - uses: actions/checkout@v4
+
+      # 固定 JDK 17，与 Kotlin/Java 编译目标一致
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 官方 Flutter Action，不再依赖 cirrus Docker 容器
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+          cache: true
 
       - run: flutter --version
 
-      - name: Setup Android SDK
+      - name: Install Android SDK Platform
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          ls -la $ANDROID_HOME/platforms/ 2>/dev/null || echo "No platforms dir"
-          ls -la $ANDROID_HOME/build-tools/ 2>/dev/null || echo "No build-tools dir"
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-35" "build-tools;35.0.0" 2>&1 || true
+          flutter doctor --android-licenses 2>/dev/null || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-35" "build-tools;35.0.0" --yes 2>&1 || true
 
       - run: flutter pub get
 
       - name: Build debug APK
         run: flutter build apk --debug --android-skip-build-dependency-validation
 
-      - name: List APK output
-        run: find . -name "*.apk" -type f
-
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: omr-scanner-debug-apk
-          path: "**/app-debug.apk"
+          path: build/app/outputs/flutter-apk/app-debug.apk
