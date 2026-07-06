@@ -35,31 +35,8 @@ jobs:
 
       - run: flutter pub get
 
-      # Debug: check environment before build
-      - name: Pre-build diagnostics
-        run: |
-          echo "=== Flutter ==="
-          flutter doctor -v
-          echo "=== Gradle ==="
-          cd android && ./gradlew --version 2>&1 || true
-          echo "=== Android SDK ==="
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          ls -la $ANDROID_HOME/platforms/ 2>&1 || true
-          echo "=== local.properties ==="
-          cat android/local.properties 2>&1 || echo "(file not found)"
-
       - name: Build debug APK
-        run: |
-          flutter build apk --debug --verbose 2>&1 | tee /tmp/build-output.log | tail -200
-        continue-on-error: true
-
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-debug-log
-          path: /tmp/build-output.log
+        run: flutter build apk --debug
 
       - name: Upload APK Artifact
         if: success()
