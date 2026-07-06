@@ -21,12 +21,12 @@ jobs:
           echo "ANDROID_HOME=$ANDROID_HOME"
           ls -la $ANDROID_HOME/platforms/ 2>/dev/null || echo "No platforms dir"
           ls -la $ANDROID_HOME/build-tools/ 2>/dev/null || echo "No build-tools dir"
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-34" "build-tools;34.0.0" 2>&1 || true
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-35" "build-tools;35.0.0" 2>&1 || true
 
       - run: flutter pub get
 
       - name: Build debug APK
-        run: flutter build apk --debug
+        run: flutter build apk --debug --verbose 2>&1 | tail -30
 
       - uses: actions/upload-artifact@v4
         with:
