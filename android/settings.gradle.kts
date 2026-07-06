@@ -10,11 +10,13 @@ pluginManagement {
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
-        // 阿里云 Maven 镜像（国内网络可用，覆盖面全）
+        // 官方源（CI / GitHub Actions 使用）
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        // 阿里云镜像（国内开发网络备用）
         maven("https://maven.aliyun.com/repository/google")
         maven("https://maven.aliyun.com/repository/public")
-        // Gradle Plugin Portal（阿里云无对应镜像，保留官方源）
-        gradlePluginPortal()
     }
 
     plugins {

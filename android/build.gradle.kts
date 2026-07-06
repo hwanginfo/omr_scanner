@@ -12,9 +12,11 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
-// 国内 Maven 镜像（不拦截 Flutter 内置本地依赖）
+// 仓库镜像（不拦截 Flutter 内置本地依赖，支持 CI 和国内开发）
 allprojects {
     repositories {
+        google()
+        mavenCentral()
         maven("https://maven.aliyun.com/repository/public")
         maven("https://maven.aliyun.com/repository/google")
     }
